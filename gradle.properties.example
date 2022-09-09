@@ -1,0 +1,3 @@
+DATABASE_HOST=jdbc:mysql://127.0.0.1/bmi
+DATABASE_USER=database
+DATABASE_PASS=password123

@@ -1,0 +1,8 @@
+plugins {
+    id 'java-library'
+}
+
+dependencies {
+    compileOnly 'com.github.Anuken.Arc:arc-core:v126'
+    compileOnly 'com.github.Anuken.Mindustry:core:v126'
+}

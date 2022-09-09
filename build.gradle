@@ -1,0 +1,84 @@
+plugins {
+    id 'java-library'
+    id 'nu.studer.jooq' version '7.1.1'
+    id 'com.github.johnrengelman.shadow' version '7.1.2'
+}
+
+allprojects {
+    apply plugin: 'java-library'
+    apply plugin: 'com.github.johnrengelman.shadow'
+
+    group 'fr.redstonneur1256'
+    version '1.0'
+
+    repositories {
+        mavenCentral()
+        maven { url 'https://jitpack.io' }
+    }
+
+    sourceSets {
+        main.java.srcDirs = ['src/']
+        main.resources.srcDirs = ['res/']
+        test.java.srcDirs = []
+        test.resources.srcDirs = []
+    }
+
+    tasks.withType(JavaCompile) {
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
+        options.encoding = 'UTF-8'
+    }
+}
+
+dependencies {
+    jooqGenerator 'mysql:mysql-connector-java:8.0.30'
+
+    api 'org.apache.logging.log4j:log4j-slf4j-impl:2.18.0'
+    api('org.slf4j:slf4j-api:1.7.36') {
+        version {
+            strictly '1.7.36'
+        }
+    }
+
+    api 'mysql:mysql-connector-java:8.0.30'
+    api 'com.zaxxer:HikariCP:5.0.1'
+    api 'io.javalin:javalin:5.0.0.RC0'
+    api 'com.fasterxml.jackson.core:jackson-databind:2.13.4'
+    api 'com.fasterxml.jackson.dataformat:jackson-dataformat-yaml:2.13.4'
+    api 'com.google.guava:guava:31.1-jre'
+}
+
+jar {
+    manifest {
+        attributes.put('Main-Class', 'fr.redstonneur1256.bmi.Main')
+    }
+}
+
+jooq {
+    configurations {
+        main {
+            generationTool {
+                jdbc {
+                    driver = 'com.mysql.cj.jdbc.Driver'
+                    url = DATABASE_HOST
+                    user = DATABASE_USER
+                    password = DATABASE_PASS
+                }
+                generator {
+                    database {
+                        inputSchema = 'bmi'
+                    }
+                    generate {
+                        deprecated = false
+                        records = true
+                        immutablePojos = true
+                        fluentSetters = true
+                    }
+                    target {
+                        packageName = 'fr.redstonneur1256.bmi.jooq'
+                    }
+                }
+            }
+        }
+    }
+}
